@@ -6,7 +6,19 @@
         xmlns:local="clr-namespace:IPTV"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vlcPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
+            <wpf:VlcPlayer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Fullscreen"  x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
+                    <Separator />
+                    <MenuItem Header="Menu item 1" x:Name="cmItem1" Click="cmItem1_Click"/>
+                    <MenuItem Header="Menu item 2" x:Name="cmItem2" Click="cmItem2_Click"/>
+                    <MenuItem Header="Menu item 3" x:Name="cmItem3" Click="cmItem3_Click"/>
+                    <Separator />
+                    <MenuItem Header="Exit"  x:Name="cmExit" Click="cmExit_Click"/>
+                </ContextMenu>
+            </wpf:VlcPlayer.ContextMenu>
+        </wpf:VlcPlayer>
+    </DockPanel>
 </Window>
