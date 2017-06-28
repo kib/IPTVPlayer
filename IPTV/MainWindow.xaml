@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <DockPanel>
+        <TreeView DockPanel.Dock="Right" Width="200" Name="ChannelView" HorizontalAlignment="Left" ItemsSource="{Binding}">
+            <TreeView.Resources>
+            </TreeView.Resources>
+        </TreeView>
         <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vlcPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu>
