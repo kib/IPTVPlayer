@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:IPTV.TreeView"
         mc:Ignorable="d"
-        Title="MainWindow" Height="738" Width="1480">
+        Title="MainWindow" Height="Auto" Width="1024"
+        Icon="monitor.ico">
     <DockPanel Background="Black">
         <TreeView Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" Width="200" HorizontalAlignment="Left">
             <TreeView.ItemContainerStyle>

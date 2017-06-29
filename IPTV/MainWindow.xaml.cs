@@ -19,6 +19,8 @@ namespace IPTV
             vlcPlayer.LoadMedia(new Uri("udp://@224.0.251.1:8002"));
             // play video
             vlcPlayer.Play();
+            //Application.Current.MainWindow.Height =  
+
         }
 
         private void populateTreeView()
@@ -108,6 +110,7 @@ namespace IPTV
         {
             Channel clicked = new Channel();
             clicked = (Channel)ChannelView.SelectedItem;
+            if (clicked.Type == "Radio") { vlcPlayer.Stop(); }
             vlcPlayer.LoadMedia(new Uri(clicked.URL));
             vlcPlayer.Play();
             e.Handled = true;

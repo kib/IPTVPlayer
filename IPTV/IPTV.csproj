@@ -54,6 +54,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>IPTV.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>monitor.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Meta.Vlc, Version=16.5.1.0, Culture=neutral, PublicKeyToken=721a8c5379fa4056, processorArchitecture=x86">
       <HintPath>..\packages\Meta.Vlc.17.06.20\lib\net45\x86\Meta.Vlc.dll</HintPath>
@@ -446,6 +452,7 @@
     <Content Include="LibVlc\plugins\visualization\libgoom_plugin.dll" />
     <Content Include="LibVlc\plugins\visualization\libprojectm_plugin.dll" />
     <Content Include="LibVlc\plugins\visualization\libvisual_plugin.dll" />
+    <Resource Include="monitor.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
