@@ -64,22 +64,27 @@ namespace IPTV
 
         private void cmFullScreen_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Maximized;
-            WindowStyle = WindowStyle.None;
+            switchFullscreen();
         }
 
-        private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void switchFullscreen()
         {
             if (WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.SingleBorderWindow;
+                cmFullScreen.Header = "Fullscreen";
             }
             else if (WindowState == WindowState.Normal)
             {
                 WindowState = WindowState.Maximized;
                 WindowStyle = WindowStyle.None;
+                cmFullScreen.Header = "End Fullscreen";
             }
+        }
+        private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            switchFullscreen();
         }
 
         private void cmItem3_Click(object sender, RoutedEventArgs e)
@@ -101,7 +106,7 @@ namespace IPTV
 
         private void cmItem1_Click(object sender, RoutedEventArgs e)
         {
-            //not implemented
+            //
         }
 
         private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
