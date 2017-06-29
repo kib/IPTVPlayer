@@ -1,8 +1,8 @@
-﻿using IPTV.TreeView;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Collections.Generic;
+using IPTV.TreeView;
 
 namespace IPTV
 {
@@ -16,11 +16,9 @@ namespace IPTV
             InitializeComponent();
             // fill the list
             populateTreeView();
-            vlcPlayer.LoadMedia(new Uri("udp://@224.0.251.1:8002"));
+            vidPlayer.LoadMedia(new Uri("udp://@224.0.251.1:8002"));
             // play video
-            vlcPlayer.Play();
-            //Application.Current.MainWindow.Height =  
-
+            vidPlayer.Play();
         }
 
         private void populateTreeView()
@@ -96,8 +94,8 @@ namespace IPTV
 
         private void cmExit_Click(object sender, RoutedEventArgs e)
         {
-            vlcPlayer.Stop();
-            vlcPlayer.Dispose();
+            vidPlayer.Stop();
+            vidPlayer.Dispose();
             Close();
         }
 
@@ -109,10 +107,31 @@ namespace IPTV
         private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             Channel clicked = new Channel();
-            clicked = (Channel)ChannelView.SelectedItem;
-            if (clicked.Type == "Radio") { vlcPlayer.Stop(); }
-            vlcPlayer.LoadMedia(new Uri(clicked.URL));
-            vlcPlayer.Play();
+            try {
+                clicked = (Channel)ChannelView.SelectedItem;
+            } catch (InvalidCastException) {
+                Console.Write("\r\nCategory clicked");
+            }
+
+            if (clicked.Type == "Radio") {          
+                vidPlayer.Stop();
+            }
+
+            if (clicked.URL != null) {            
+                vidPlayer.LoadMedia(new Uri(clicked.URL));
+                vidPlayer.Play();
+            }
+
+            
+
+                    // some debugging, remove later
+                    Console.Write("\r\n");
+                    Console.Write("vidPlayer.ActualHeight = " + vidPlayer.ActualHeight + " <\r\n" );
+                    Console.Write("vidPlayer.ActualWidth = " + vidPlayer.ActualWidth + " <\r\n");
+                    Console.Write("vidPlayer.RenderSize = " + vidPlayer.RenderSize + " <\r\n");
+                    Console.Write("\r\n");
+                    //end debugging
+
             e.Handled = true;
         }
     }

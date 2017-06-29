@@ -5,22 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:IPTV.TreeView"
         mc:Ignorable="d"
-        Title="MainWindow" Height="Auto" Width="1024"
+        Title="MainWindow" Height="800" Width="1200"
         Icon="monitor.ico">
     <DockPanel Background="Black">
-        <TreeView Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" Width="200" HorizontalAlignment="Left">
+        <TreeView Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" Width="200" HorizontalAlignment="Left">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="Foreground" Value="White" />
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type self:Category}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Name}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Lcn}" Foreground="Gray"/>
+                        <TextBlock Text="  " Foreground="Gray"/>
+                        <TextBlock Text="{Binding Path=Name}" Foreground="White"/>
+
+                        
+                    </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vlcPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
+        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Fullscreen"  x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
