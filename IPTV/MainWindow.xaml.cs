@@ -20,54 +20,15 @@ namespace IPTV
             startLastPlayed();
         }
 
-        private void startLastPlayed()
-        {
-            Properties.Settings.Default.Reload();
-            if (Properties.Settings.Default.LastPlayed != null)
-            {
-                playMedia(new Uri (old));
-            }
-            else
-            {
-                // if nothing was stored, play the first channel
-                playMedia(new Uri("udp://@239.1.1.1:8000"));
-            }
-        }
-
-        private void storeRecentlyPlayed(String url)
-        {
-            String uri = url;
-            Properties.Settings.Default.LastPlayed = uri.ToString();
-            Properties.Settings.Default.Save();
-            Properties.Settings.Default.Reload();
-        }
-
+        // handling interface clicks
         private void cmFullScreen_Click(object sender, RoutedEventArgs e)
         {
             switchFullscreen();
         }
-
-        private void switchFullscreen()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                WindowStyle = WindowStyle.SingleBorderWindow;
-                cmFullScreen.Header = "Fullscreen";
-            }
-            else if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-                WindowStyle = WindowStyle.None;
-                cmFullScreen.Header = "End Fullscreen";
-            }
-        }
-
         private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             switchFullscreen();
         }
-
         private void cmExit_Click(object sender, RoutedEventArgs e)
         {
             vidPlayer.Stop();
@@ -75,7 +36,6 @@ namespace IPTV
             Properties.Settings.Default.Save();
             Close();
         }
-
         private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             Channel clicked = new Channel();
@@ -106,13 +66,52 @@ namespace IPTV
             */
         }
 
+        // media playback
         private void playMedia(Uri url)
         {
             vidPlayer.LoadMedia(url);
             storeRecentlyPlayed(url.ToString());
             vidPlayer.Play();
         }
+        private void startLastPlayed()
+        {
+            Properties.Settings.Default.Reload();
+            if (Properties.Settings.Default.LastPlayed != null)
+            {
+                playMedia(new Uri(Properties.Settings.Default.LastPlayed));
+            }
+            else
+            {
+                // if nothing was stored, play the first channel
+                playMedia(new Uri("udp://@239.1.1.1:8000"));
+            }
+        }
 
+        // settings and interface
+        private void storeRecentlyPlayed(String url)
+        {
+            String uri = url;
+            Properties.Settings.Default.LastPlayed = uri.ToString();
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
+        }
+        private void switchFullscreen()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                WindowStyle = WindowStyle.SingleBorderWindow;
+                cmFullScreen.Header = "Fullscreen";
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+                WindowStyle = WindowStyle.None;
+                cmFullScreen.Header = "End Fullscreen";
+            }
+        }
+
+        // populate the interface
         private void populateTreeView()
         {
             // populate the treeview here
@@ -153,7 +152,6 @@ namespace IPTV
             // populate the treeview with the list of channelgroups
             ChannelView.ItemsSource = cats;
         }
-
         private void populateRMBMenu()
         {
             // add a menu item programmatically
