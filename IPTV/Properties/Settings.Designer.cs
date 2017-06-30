@@ -25,13 +25,37 @@ namespace IPTV.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LastPlayed {
             get {
                 return ((string)(this["LastPlayed"]));
             }
             set {
                 this["LastPlayed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPanel {
+            get {
+                return ((bool)(this["ShowPanel"]));
+            }
+            set {
+                this["ShowPanel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FullScreen {
+            get {
+                return ((bool)(this["FullScreen"]));
+            }
+            set {
+                this["FullScreen"] = value;
             }
         }
     }

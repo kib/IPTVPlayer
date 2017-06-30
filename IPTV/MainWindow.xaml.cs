@@ -17,23 +17,26 @@ namespace IPTV
             InitializeComponent();
             populateTreeView();
             populateRMBMenu();
-            startLastPlayed();
+            loadSettings();
         }
 
         // handling interface clicks
         private void cmFullScreen_Click(object sender, RoutedEventArgs e)
         {
             switchFullscreen();
+            e.Handled = true;
         }
         private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             switchFullscreen();
+            e.Handled = true;
         }
         private void cmExit_Click(object sender, RoutedEventArgs e)
         {
             vidPlayer.Stop();
             vidPlayer.Dispose();
             Properties.Settings.Default.Save();
+            e.Handled = true;
             Close();
         }
         private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -73,11 +76,23 @@ namespace IPTV
             storeRecentlyPlayed(url.ToString());
             vidPlayer.Play();
         }
-        private void startLastPlayed()
+        private void loadSettings()
         {
             Properties.Settings.Default.Reload();
-            if (Properties.Settings.Default.LastPlayed != null)
+            
+            if (Properties.Settings.Default.ShowPanel == false)
             {
+                ChannelView.Visibility = Visibility.Collapsed;
+            }
+
+            if (Properties.Settings.Default.FullScreen)
+            {
+                switchFullscreen();
+            }
+            
+            if (Properties.Settings.Default.LastPlayed != "")
+            {
+                Console.Write("\r\n" + Properties.Settings.Default.LastPlayed);
                 playMedia(new Uri(Properties.Settings.Default.LastPlayed));
             }
             else
@@ -95,19 +110,36 @@ namespace IPTV
             Properties.Settings.Default.Save();
             Properties.Settings.Default.Reload();
         }
+
+        private void storePanelShownPref(bool panelshown)
+        {
+            Properties.Settings.Default.ShowPanel = panelshown;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
+        }
+
+        private void storeFullScreenPref(bool fullscreen)
+        {
+            Properties.Settings.Default.FullScreen = fullscreen;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
+        }
+
         private void switchFullscreen()
         {
             if (WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.SingleBorderWindow;
-                cmFullScreen.Header = "Fullscreen";
+                cmFullScreen.Header = "Fill Screen";
+                storeFullScreenPref(false);
             }
             else if (WindowState == WindowState.Normal)
             {
                 WindowState = WindowState.Maximized;
                 WindowStyle = WindowStyle.None;
-                cmFullScreen.Header = "End Fullscreen";
+                cmFullScreen.Header = "Windowed Mode";
+                storeFullScreenPref(true);
             }
         }
 
@@ -155,11 +187,30 @@ namespace IPTV
         private void populateRMBMenu()
         {
             // add a menu item programmatically
-            MenuItem menu = (MenuItem)this.rmMenu.Items[2]; // ICC item
+            MenuItem menu = (MenuItem)this.rmMenu.Items[3]; // ICC item
             MenuItem newitem = new MenuItem();
             newitem.Header = "ICC CR1 EN";
             newitem.Click += (sender, e) => playMedia(new Uri("udp://@239.1.1.1:8000"));
             menu.Items.Add(newitem);
+        }
+
+        private void cmDock_Click(object sender, RoutedEventArgs e)
+        {
+            if (ChannelView.Visibility == Visibility.Collapsed)
+            {
+
+                ChannelView.Visibility = Visibility.Visible;
+                cmDock.Header = "Hide Channel List";
+                storePanelShownPref(true);
+            }
+            else if (ChannelView.Visibility == Visibility.Visible)
+            {
+                ChannelView.Visibility = Visibility.Collapsed;
+                cmDock.Header = "Show Channel List";
+                storePanelShownPref(false);
+            }
+            
+            e.Handled = true;
         }
     }
 }

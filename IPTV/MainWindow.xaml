@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1200"
         Icon="monitor.ico">
-    <DockPanel Background="Black">
+    <DockPanel Name="dpMain" Background="Black">
         <TreeView BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" Width="200" HorizontalAlignment="Left">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -29,7 +29,8 @@
         <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu Name="rmMenu">
-                    <MenuItem Header="Fullscreen"  x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
+                    <MenuItem Header="Fill Screen" x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
+                    <MenuItem Header="Hide Channel List" x:Name="cmDock" Click="cmDock_Click" />
                     <Separator />
                     <MenuItem Header="ICC" x:Name="cmItem1"/>
                     <MenuItem Header="TV" x:Name="cmItem2"/>
