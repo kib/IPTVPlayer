@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Collections.Generic;
 using IPTV.TreeView;
+using System.Windows.Controls;
 
 namespace IPTV
 {
@@ -14,10 +15,101 @@ namespace IPTV
         public MainWindow()
         {
             InitializeComponent();
-            // fill the list
             populateTreeView();
-            vidPlayer.LoadMedia(new Uri("udp://@224.0.251.1:8002"));
-            // play video
+            populateRMBMenu();
+            startLastPlayed();
+        }
+
+        private void startLastPlayed()
+        {
+            Properties.Settings.Default.Reload();
+            if (Properties.Settings.Default.LastPlayed != null)
+            {
+                playMedia(new Uri (old));
+            }
+            else
+            {
+                // if nothing was stored, play the first channel
+                playMedia(new Uri("udp://@239.1.1.1:8000"));
+            }
+        }
+
+        private void storeRecentlyPlayed(String url)
+        {
+            String uri = url;
+            Properties.Settings.Default.LastPlayed = uri.ToString();
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
+        }
+
+        private void cmFullScreen_Click(object sender, RoutedEventArgs e)
+        {
+            switchFullscreen();
+        }
+
+        private void switchFullscreen()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                WindowStyle = WindowStyle.SingleBorderWindow;
+                cmFullScreen.Header = "Fullscreen";
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+                WindowStyle = WindowStyle.None;
+                cmFullScreen.Header = "End Fullscreen";
+            }
+        }
+
+        private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            switchFullscreen();
+        }
+
+        private void cmExit_Click(object sender, RoutedEventArgs e)
+        {
+            vidPlayer.Stop();
+            vidPlayer.Dispose();
+            Properties.Settings.Default.Save();
+            Close();
+        }
+
+        private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            Channel clicked = new Channel();
+            try
+            {
+                clicked = (Channel)ChannelView.SelectedItem;
+            }
+            catch (InvalidCastException) {}
+
+            if (clicked.Type == "Radio")
+            {
+                vidPlayer.Stop();
+            }
+
+            if (clicked.URL != null)
+            {
+                playMedia(new Uri(clicked.URL));
+            }
+            
+            e.Handled = true;
+
+            /* some debugging, remove later
+            Console.Write("\r\n");
+            Console.Write("vidPlayer.ActualHeight = " + vidPlayer.ActualHeight + " <\r\n" );
+            Console.Write("vidPlayer.ActualWidth = " + vidPlayer.ActualWidth + " <\r\n");
+            Console.Write("vidPlayer.RenderSize = " + vidPlayer.RenderSize + " <\r\n");
+            Console.Write("\r\n");
+            */
+        }
+
+        private void playMedia(Uri url)
+        {
+            vidPlayer.LoadMedia(url);
+            storeRecentlyPlayed(url.ToString());
             vidPlayer.Play();
         }
 
@@ -62,83 +154,14 @@ namespace IPTV
             ChannelView.ItemsSource = cats;
         }
 
-        private void cmFullScreen_Click(object sender, RoutedEventArgs e)
+        private void populateRMBMenu()
         {
-            switchFullscreen();
-        }
-
-        private void switchFullscreen()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                WindowStyle = WindowStyle.SingleBorderWindow;
-                cmFullScreen.Header = "Fullscreen";
-            }
-            else if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-                WindowStyle = WindowStyle.None;
-                cmFullScreen.Header = "End Fullscreen";
-            }
-        }
-        private void vlcPlayer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            switchFullscreen();
-        }
-
-        private void cmItem3_Click(object sender, RoutedEventArgs e)
-        {
-            //not implemented
-        }
-
-        private void cmItem2_Click(object sender, RoutedEventArgs e)
-        {
-            //not implemented
-        }
-
-        private void cmExit_Click(object sender, RoutedEventArgs e)
-        {
-            vidPlayer.Stop();
-            vidPlayer.Dispose();
-            Close();
-        }
-
-        private void cmItem1_Click(object sender, RoutedEventArgs e)
-        {
-            //
-        }
-
-        private void ChannelView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            Channel clicked = new Channel();
-            try {
-                clicked = (Channel)ChannelView.SelectedItem;
-            } catch (InvalidCastException) {
-                Console.Write("\r\nCategory clicked");
-            }
-
-            if (clicked.Type == "Radio") {          
-                vidPlayer.Stop();
-            }
-
-            if (clicked.URL != null) {            
-                vidPlayer.LoadMedia(new Uri(clicked.URL));
-                vidPlayer.Play();
-            }
-
-            
-
-                    // some debugging, remove later
-                    Console.Write("\r\n");
-                    Console.Write("vidPlayer.ActualHeight = " + vidPlayer.ActualHeight + " <\r\n" );
-                    Console.Write("vidPlayer.ActualWidth = " + vidPlayer.ActualWidth + " <\r\n");
-                    Console.Write("vidPlayer.RenderSize = " + vidPlayer.RenderSize + " <\r\n");
-                    Console.Write("\r\n");
-                    //end debugging
-
-            e.Handled = true;
+            // add a menu item programmatically
+            MenuItem menu = (MenuItem)this.rmMenu.Items[2]; // ICC item
+            MenuItem newitem = new MenuItem();
+            newitem.Header = "ICC CR1 EN";
+            newitem.Click += (sender, e) => playMedia(new Uri("udp://@239.1.1.1:8000"));
+            menu.Items.Add(newitem);
         }
     }
-
 }

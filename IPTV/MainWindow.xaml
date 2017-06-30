@@ -28,12 +28,12 @@
         </TreeView>
         <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
             <wpf:VlcPlayer.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Name="rmMenu">
                     <MenuItem Header="Fullscreen"  x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
                     <Separator />
-                    <MenuItem Header="Menu item 1" x:Name="cmItem1" Click="cmItem1_Click"/>
-                    <MenuItem Header="Menu item 2" x:Name="cmItem2" Click="cmItem2_Click"/>
-                    <MenuItem Header="Menu item 3" x:Name="cmItem3" Click="cmItem3_Click"/>
+                    <MenuItem Header="ICC" x:Name="cmItem1"/>
+                    <MenuItem Header="TV" x:Name="cmItem2"/>
+                    <MenuItem Header="Radio" x:Name="cmItem3"/>
                     <Separator />
                     <MenuItem Header="Exit"  x:Name="cmExit" Click="cmExit_Click"/>
                 </ContextMenu>
