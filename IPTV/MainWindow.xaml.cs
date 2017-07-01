@@ -6,6 +6,7 @@ using IPTV.TreeView;
 using System.Windows.Controls;
 using System.IO;
 using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace IPTV
 {
@@ -134,6 +135,7 @@ namespace IPTV
                 WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.ThreeDBorderWindow;
                 cmFullScreen.Header = "Fill Screen";
+                changeMenuIcon(cmFullScreen, "Resources/larger.png");
                 storeFullScreenPref(false);
             }
             else if (WindowState == WindowState.Normal)
@@ -141,9 +143,19 @@ namespace IPTV
                 WindowStyle = WindowStyle.None;
                 WindowState = WindowState.Maximized;
                 cmFullScreen.Header = "Windowed Mode";
+                changeMenuIcon(cmFullScreen, "Resources/smaller.png");
                 storeFullScreenPref(true);
             }
         }
+
+        private void changeMenuIcon(MenuItem menu, String IconResource)
+        {
+            menu.Icon = new System.Windows.Controls.Image
+            {
+                Source = new BitmapImage(new Uri(IconResource, UriKind.Relative))
+            };
+        }
+
 
         private IEnumerable<string> EnumerateLines(TextReader reader)
         {

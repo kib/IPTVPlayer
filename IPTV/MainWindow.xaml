@@ -30,14 +30,26 @@
         <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu Name="rmMenu">
-                    <MenuItem Header="Fill Screen" x:Name="cmFullScreen" Click="cmFullScreen_Click"/>
-                    <MenuItem Header="Hide Channel List" x:Name="cmDock" Click="cmDock_Click" />
+                    <MenuItem Header="Fill Screen" x:Name="cmFullScreen" Click="cmFullScreen_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/larger.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Hide Channel List" x:Name="cmDock" Click="cmDock_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/listing.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator />
                     <MenuItem Header="ICC" x:Name="cmItem1"/>
                     <MenuItem Header="TV" x:Name="cmItem2"/>
                     <MenuItem Header="Radio" x:Name="cmItem3"/>
                     <Separator />
-                    <MenuItem Header="Exit"  x:Name="cmExit" Click="cmExit_Click"/>
+                    <MenuItem Header="Exit"  x:Name="cmExit" Click="cmExit_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/quit.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </wpf:VlcPlayer.ContextMenu>
         </wpf:VlcPlayer>
