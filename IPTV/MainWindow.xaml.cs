@@ -130,14 +130,14 @@ namespace IPTV
             if (WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Normal;
-                WindowStyle = WindowStyle.SingleBorderWindow;
+                WindowStyle = WindowStyle.ThreeDBorderWindow;
                 cmFullScreen.Header = "Fill Screen";
                 storeFullScreenPref(false);
             }
             else if (WindowState == WindowState.Normal)
             {
-                WindowState = WindowState.Maximized;
                 WindowStyle = WindowStyle.None;
+                WindowState = WindowState.Maximized;
                 cmFullScreen.Header = "Windowed Mode";
                 storeFullScreenPref(true);
             }
