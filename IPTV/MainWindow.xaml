@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:self="clr-namespace:IPTV.TreeView"
+        xmlns:self="clr-namespace:IPTV.Objects"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1200"
         Icon="monitor.ico"
         WindowStyle="ThreeDBorderWindow">
-    <DockPanel Name="dpMain" Background="Black">
+    <DockPanel Loaded="dpMain_Loaded" Name="dpMain" Background="Black">
         <TreeView BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" HorizontalAlignment="Left">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -27,27 +27,44 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vlcPlayer_MouseDoubleClick">
+        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vidPlayer_DoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu Name="rmMenu">
-                    <MenuItem Header="Fill Screen" x:Name="cmFullScreen" Click="cmFullScreen_Click">
+                    <MenuItem Header="FullScreen"  InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
                         <MenuItem.Icon>
                             <Image Source="Resources/larger.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Hide Channel List" x:Name="cmDock" Click="cmDock_Click">
+                    <MenuItem Header="Mute" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click">
                         <MenuItem.Icon>
-                            <Image Source="Resources/listing.png" />
+                            <Image Source="Resources/muted.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Hide Channels" InputGestureText="C" x:Name="cmChannels" Click="cmChannels_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/twopanel.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="ICC" x:Name="cmItem1"/>
-                    <MenuItem Header="TV" x:Name="cmItem2"/>
-                    <MenuItem Header="Radio" x:Name="cmItem3"/>
-                    <Separator />
-                    <MenuItem Header="Exit"  x:Name="cmExit" Click="cmExit_Click">
+                    <MenuItem Header="ICC" x:Name="cmItem1">
                         <MenuItem.Icon>
-                            <Image Source="Resources/quit.png" />
+                            <Image Source="Resources/monitor.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="TV" x:Name="cmItem2">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/TV.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Radio" x:Name="cmItem3">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/Radio.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Quit"  InputGestureText="Q" x:Name="cmExit" Click="cmExit_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/power.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
