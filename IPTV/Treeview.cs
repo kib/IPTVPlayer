@@ -14,14 +14,13 @@ namespace IPTV.TreeView
 
         public static Channel FromCSV(string csvLine)
         {
-            string[] values = csvLine.Split(',');
+            string[] values = csvLine.Split(';');
             Channel channels = new Channel();
             channels.Lcn = Convert.ToInt16(values[0]);
-            channels.ID = Convert.ToInt16(values[1]);
-            channels.Name = Convert.ToString(values[2]);
-            channels.Logo = Convert.ToString(values[3]);
-            channels.URL = Convert.ToString(values[4]);
-            channels.Type = Convert.ToString(values[5]);
+            channels.Name = Convert.ToString(values[1]);
+            channels.Logo = Convert.ToString(values[2]);
+            channels.URL = Convert.ToString(values[3]);
+            channels.Type = Convert.ToString(values[4]);
             return channels;
         }
     }

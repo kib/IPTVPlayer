@@ -4,6 +4,8 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using IPTV.TreeView;
 using System.Windows.Controls;
+using System.IO;
+using System.Linq;
 
 namespace IPTV
 {
@@ -15,8 +17,7 @@ namespace IPTV
         public MainWindow()
         {
             InitializeComponent();
-            populateTreeView();
-            populateRMBMenu();
+            populateInterface();
             loadSettings();
         }
 
@@ -60,7 +61,7 @@ namespace IPTV
             
             e.Handled = true;
 
-            /* some debugging, remove later
+            /* interesting properties to resize window with later
             Console.Write("\r\n");
             Console.Write("vidPlayer.ActualHeight = " + vidPlayer.ActualHeight + " <\r\n" );
             Console.Write("vidPlayer.ActualWidth = " + vidPlayer.ActualWidth + " <\r\n");
@@ -98,7 +99,8 @@ namespace IPTV
             else
             {
                 // if nothing was stored, play the first channel
-                playMedia(new Uri("udp://@239.1.1.1:8000"));
+                //playMedia(new Uri("udp://@239.1.1.1:8000"));
+                playMedia(new Uri("D:\\VS_Projects\\test.avi"));
             }
         }
 
@@ -143,54 +145,88 @@ namespace IPTV
             }
         }
 
-        // populate the interface
-        private void populateTreeView()
+        private IEnumerable<string> EnumerateLines(TextReader reader)
         {
-            // populate the treeview here
-            List<Category> cats = new List<Category>();
+            string line;
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                yield return line;
+            }
+        }
+
+        string[] ReadAllResourceLines(byte[] resourceData)
+        {
+            using (Stream stream = new MemoryStream(resourceData))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return EnumerateLines(reader).ToArray();
+            }
+        }
+
+        private List<Channel> importChannelList()
+        {
+            string[] allLines = ReadAllResourceLines(IPTV.Properties.Resources.ch);
+
+            List<Channel> chanimport = allLines
+                .Select(v => Channel.FromCSV(v))
+                .ToList();
+            return chanimport;
+         
+        }
+
+        // populate the interface
+        private void populateInterface()
+        {
+            List<Channel> chanimport = importChannelList();
 
             Category c1 = new Category() { Name = "ICC" };
             Category c2 = new Category() { Name = "TV" };
             Category c3 = new Category() { Name = "Radio" };
-
+            
+                        foreach (Channel ch in chanimport)
+                {
+                    switch (ch.Type)
+                    {
+                        case "ICC":
+                            c1.Items.Add(ch);
+                            addRMBItem(ch);
+                            break;
+                        case "TV":
+                            c2.Items.Add(ch);
+                            addRMBItem(ch); 
+                            break;
+                        case "Radio":
+                            c3.Items.Add(ch);
+                            addRMBItem(ch);
+                            break;
+                    }
+                }
+            // populate the treeview here
+            List<Category> cats = new List<Category>();
             cats.Add(c1);
             cats.Add(c2);
             cats.Add(c3);
-
-            // ICC category
-            c1.Items.Add(new Channel() { Lcn = 1, ID = 1, Name = "ICC CR1 EN", URL = "udp://@239.1.1.1:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 2, ID = 2, Name = "ICC CR1 FR", URL = "udp://@239.1.1.2:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 3, ID = 3, Name = "ICC CR2 EN", URL = "udp://@239.1.1.3:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 4, ID = 4, Name = "ICC CR2 FR", URL = "udp://@239.1.1.4:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 5, ID = 5, Name = "ICC CR3 EN", URL = "udp://@239.1.1.5:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 6, ID = 6, Name = "ICC CR3 FR", URL = "udp://@239.1.1.6:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 7, ID = 7, Name = "ICC Media Room EN", URL = "udp://@239.1.1.7:8000", Type = "ICC" });
-            c1.Items.Add(new Channel() { Lcn = 8, ID = 8, Name = "ICC Media Room EN", URL = "udp://@239.1.1.8:8000", Type = "ICC" });
-            // TV category
-
-            c2.Items.Add(new Channel() { Lcn = 9, ID = 9, Name = "NPO1", URL = "udp://@224.0.251.1:8002", Type = "TV" });
-            c2.Items.Add(new Channel() { Lcn = 10, ID = 10, Name = "NPO2", URL = "udp://@224.0.251.2:8004", Type = "TV" });
-            c2.Items.Add(new Channel() { Lcn = 11, ID = 11, Name = "NPO3", URL = "udp://@224.0.251.3:8006", Type = "TV" });
-            c2.Items.Add(new Channel() { Lcn = 12, ID = 12, Name = "RTL4", URL = "udp://@224.0.251.4:8008", Type = "TV" });
-            c2.Items.Add(new Channel() { Lcn = 13, ID = 13, Name = "RTL5", URL = "udp://@224.0.251.5:8010", Type = "TV" });
-            c2.Items.Add(new Channel() { Lcn = 14, ID = 14, Name = "SBS6", URL = "udp://@224.0.251.6:8012", Type = "TV" });
-
-            // Radio category
-            c3.Items.Add(new Channel() { Lcn = 15, ID = 15, Name = "NPO 3FM", URL = "udp://@224.0.251.163:8326", Type = "Radio" });
-            c3.Items.Add(new Channel() { Lcn = 16, ID = 16, Name = "Radio538", URL = "udp://@224.0.251.169:8338", Type = "Radio" });
-            c3.Items.Add(new Channel() { Lcn = 17, ID = 17, Name = "Radio Veronica", URL = "udp://@224.0.251.239:8478", Type = "Radio" });
-            c3.Items.Add(new Channel() { Lcn = 18, ID = 18, Name = "Slam! FM", URL = "udp://@224.0.251.176:8352", Type = "Radio" });
-
-            // populate the treeview with the list of channelgroups
             ChannelView.ItemsSource = cats;
         }
-        private void populateRMBMenu()
+        private void addRMBItem(Channel ch)
         {
-            // add a menu item programmatically
-            MenuItem menu = (MenuItem)this.rmMenu.Items[3]; // ICC item
+            MenuItem menu = new MenuItem();
+            switch (ch.Type)
+            {
+                case "ICC":
+                    menu = (MenuItem)this.rmMenu.Items[3];
+                    break;
+                case "TV":
+                    menu = (MenuItem)this.rmMenu.Items[4];
+                    break;
+                case "Radio":
+                    menu = (MenuItem)this.rmMenu.Items[5];
+                    break;
+            }
             MenuItem newitem = new MenuItem();
-            newitem.Header = "ICC CR1 EN";
-            newitem.Click += (sender, e) => playMedia(new Uri("udp://@239.1.1.1:8000"));
+            newitem.Header = ch.Lcn + ". " + ch.Name;
+            newitem.Click += (sender, e) => playMedia(new Uri(ch.URL));
             menu.Items.Add(newitem);
         }
 
