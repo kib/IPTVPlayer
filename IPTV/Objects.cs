@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-namespace IPTV.TreeView
+namespace IPTV.Objects
 {
     public class Channel
     {
@@ -23,6 +23,8 @@ namespace IPTV.TreeView
             channels.Type = Convert.ToString(values[4]);
             return channels;
         }
+
+        public string Items { get; }
     }
 
     public class Category
@@ -33,6 +35,7 @@ namespace IPTV.TreeView
         }
 
         public string Name { get; set; }
+        public string Lcn { get; }
 
         public ObservableCollection<Channel> Items { get; set; }
     }
