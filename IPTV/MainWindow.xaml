@@ -9,7 +9,7 @@
         Icon="monitor.ico"
         WindowStyle="ThreeDBorderWindow">
     <DockPanel Name="dpMain" Background="Black">
-        <TreeView BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" Width="200" HorizontalAlignment="Left">
+        <TreeView BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" HorizontalAlignment="Left">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True" />
