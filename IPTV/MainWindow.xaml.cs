@@ -25,24 +25,70 @@ namespace IPTV
         public const int APPCOMMAND_VOLUME_DOWN = 0x90000;
         public const int WM_APPCOMMAND = 0x319;
 
-        private DispatcherTimer cpTimer;
+        private DispatcherTimer cpTimer; // currently playing
+        private DispatcherTimer biTimer; // buffered input timer
+        private String BufferedInput;
+        private List<Channel> chanimport;
+
+        private static readonly IDictionary<Key, String> NumericKeys = new Dictionary<Key, String> {
+            { Key.D0, "0" },
+            { Key.D1, "1" },
+            { Key.D2, "2" },
+            { Key.D3, "3" },
+            { Key.D4, "4" },
+            { Key.D5, "5" },
+            { Key.D6, "6" },
+            { Key.D7, "7" },
+            { Key.D8, "8" },
+            { Key.D9, "9" },
+            { Key.NumPad0, "0" },
+            { Key.NumPad1, "1" },
+            { Key.NumPad2, "2" },
+            { Key.NumPad3, "3" },
+            { Key.NumPad4, "4" },
+            { Key.NumPad5, "5" },
+            { Key.NumPad6, "6" },
+            { Key.NumPad7, "7" },
+            { Key.NumPad8, "8" },
+            { Key.NumPad9, "9" }
+        };
 
         public MainWindow()
         {
             InitializeComponent();
             populateInterface();
             createCurrentlyPlayingTimer();
+            createBufferedInputTimer();
             loadSettings();
         }
 
         private void createCurrentlyPlayingTimer()
         {
             cpTimer = new DispatcherTimer();
-            cpTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            cpTimer.Tick += new EventHandler(cpTimer_Tick);
             cpTimer.Interval = new TimeSpan(0, 0, 8);
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        private void createBufferedInputTimer()
+        {
+            BufferedInput = "";
+            biTimer = new DispatcherTimer();
+            biTimer.Tick += new EventHandler(biTimer_Tick);
+            biTimer.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        private void biTimer_Tick(object sender, EventArgs e)
+        {
+            BufferedInputLabel.Visibility = Visibility.Collapsed;
+            Channel biChannel = chanimport.FirstOrDefault(ch => ch.Lcn == Convert.ToInt32(BufferedInput));
+            if (biChannel != null) { playMedia(biChannel); }
+            BufferedInput = "";
+            biTimer.IsEnabled = false;
+        }
+
+
+
+        private void cpTimer_Tick(object sender, EventArgs e)
         {
             CurrentlyPlaying.Visibility = Visibility.Collapsed;
             cpTimer.IsEnabled = false;
@@ -87,11 +133,6 @@ namespace IPTV
             }
             catch (InvalidCastException) { }
 
-            if (clicked.Type == "Radio")
-            {
-                vidPlayer.Stop();
-            }
-
             if (clicked.URL != null)
             {
                 playMedia(clicked);
@@ -113,6 +154,7 @@ namespace IPTV
         {
             var window = Window.GetWindow(this);
             window.KeyDown += HandleKeyPress;
+            e.Handled = true;
         }
 
         private void HandleKeyPress(object sender, KeyEventArgs e)
@@ -146,16 +188,51 @@ namespace IPTV
                 case Key.Subtract:
                     Audio_VolDown();
                     break;
+                case Key.NumPad0:
+                case Key.NumPad1:
+                case Key.NumPad2:
+                case Key.NumPad3:
+                case Key.NumPad4:
+                case Key.NumPad5:
+                case Key.NumPad6:
+                case Key.NumPad7:
+                case Key.NumPad8:
+                case Key.NumPad9:
+                case Key.D0:
+                case Key.D1:
+                case Key.D2:
+                case Key.D3:
+                case Key.D4:
+                case Key.D5:
+                case Key.D6:
+                case Key.D7:
+                case Key.D8:
+                case Key.D9:
+                    addBufferedInput(NumericKeys[e.Key]);
+                    break;
             }
+            e.Handled = true;
         }
-     
+
+        private void addBufferedInput(string v)
+        {
+            biTimer.Stop();
+            BufferedInput += v;
+            BufferedInputLabel.Content = BufferedInput;
+            BufferedInputLabel.Visibility = Visibility.Visible;
+            biTimer.Start();
+        }
+
         // audio and video
         private void playMedia(Channel ch)
         {
-            
             storePref_RecentlyPlayed(ch);
             updateCurrentPlayingLabel(ch);
             vidPlayer.LoadMedia(new Uri(ch.URL));
+            if (ch.Type == "Radio")
+            {
+                vidPlayer.Stop();
+            }
             vidPlayer.Play();
         }
 
@@ -164,8 +241,13 @@ namespace IPTV
             cpTimer.Stop();
             if (ch.Type != "Radio")
             {
+                RadioCenterIcon.Visibility = Visibility.Collapsed;
                 cpTimer.Start();
+            } else
+            {
+                RadioCenterIcon.Visibility = Visibility.Visible;
             }
+            
             CurrentlyPlaying.Content = "Currently playing: " + ch.Name;
             CurrentlyPlaying.Visibility = Visibility.Visible;
         }
@@ -340,7 +422,7 @@ namespace IPTV
         // populate the interface
         private void populateInterface()
         {
-            List<Channel> chanimport = importChannelList();
+            chanimport = importChannelList();
 
             Category c1 = new Category() { Name = "ICC" };
             Category c2 = new Category() { Name = "TV" };

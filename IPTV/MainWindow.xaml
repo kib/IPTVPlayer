@@ -8,11 +8,52 @@
         Title="ICC IPTV" Height="800" Width="1200"
         Icon="monitor.ico"
         WindowStyle="ThreeDBorderWindow">
-    <Grid Loaded="dpMain_Loaded" Name="dpMain" >
+    <Grid Loaded="dpMain_Loaded" Name="dpMain">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="vidColumn" Width="*" />
             <ColumnDefinition Name="channelColumn" Width="220" />
         </Grid.ColumnDefinitions>
+        <Grid.ContextMenu>
+            <ContextMenu Name="rmMenu">
+                <MenuItem Header="FullScreen"  InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/larger.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Mute" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/muted.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Hide Channels" InputGestureText="C" x:Name="cmChannels" Click="cmChannels_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/onepanel.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="ICC" x:Name="cmItem1">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/monitor.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="TV" x:Name="cmItem2">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/TV.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Radio" x:Name="cmItem3">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Radio.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Quit"  InputGestureText="Q" x:Name="cmExit" Click="cmExit_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/power.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <TreeView Grid.Column="1" BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" Width="220" HorizontalAlignment="Right">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -32,48 +73,9 @@
             </TreeView.ItemTemplate>
         </TreeView>
         <wpf:VlcPlayer Grid.Column="0" BorderBrush="Black" Background="Black" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vidPlayer_DoubleClick">
-            <wpf:VlcPlayer.ContextMenu>
-                <ContextMenu Name="rmMenu">
-                    <MenuItem Header="FullScreen"  InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/larger.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Mute" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/muted.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Hide Channels" InputGestureText="C" x:Name="cmChannels" Click="cmChannels_Click">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/onepanel.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Header="ICC" x:Name="cmItem1">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/monitor.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="TV" x:Name="cmItem2">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/TV.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Radio" x:Name="cmItem3">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/Radio.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Header="Quit"  InputGestureText="Q" x:Name="cmExit" Click="cmExit_Click">
-                        <MenuItem.Icon>
-                            <Image Source="Resources/power.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </wpf:VlcPlayer.ContextMenu>
         </wpf:VlcPlayer>
-        <Label Grid.Column="0" Height="40" FontSize="20" VerticalAlignment="Top" Name="CurrentlyPlaying" Content="Currently playing channel" Visibility="Visible" Foreground="White" Background="Black" MouseDoubleClick="vidPlayer_DoubleClick" />
+        <Image Grid.Column="0" Height="256" Width="256" HorizontalAlignment="Center" VerticalAlignment="Center" Name="RadioCenterIcon" Visibility="Collapsed" Source="Resources/radio_biginvert.png" IsHitTestVisible="False"/>
+        <Label Grid.Column="0" Height="40" FontSize="20" VerticalAlignment="Top" Name="CurrentlyPlaying" Content="Currently playing channel" Visibility="Visible" Foreground="White" Background="Black" IsHitTestVisible="False"/>
+        <Label Grid.Column="0" Height="50" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Name="BufferedInputLabel" Content="" Visibility="Collapsed" Foreground="Black" Background="Yellow" IsHitTestVisible="False"/>
     </Grid>
 </Window>
