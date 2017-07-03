@@ -22,10 +22,6 @@ namespace IPTV
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
-        public const int APPCOMMAND_VOLUME_UP = 0xA0000;
-        public const int APPCOMMAND_VOLUME_DOWN = 0x90000;
-        public const int WM_APPCOMMAND = 0x319;
-
         private DispatcherTimer cpTimer; // currently playing timer
         private DispatcherTimer biTimer; // buffered input timer
         private String BufferedInput;
@@ -233,7 +229,7 @@ namespace IPTV
         {
             biTimer.Stop();
             BufferedInput += v;
-            BufferedInputLabel.Content = "Go to:" + BufferedInput;
+            BufferedInputLabel.Content = "Go to: " + BufferedInput;
             BufferedInputLabel.Visibility = Visibility.Visible;
             biTimer.Start();
         }
