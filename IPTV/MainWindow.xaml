@@ -75,7 +75,14 @@
         <wpf:VlcPlayer Grid.Column="0" BorderBrush="Black" Background="Black" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vidPlayer_DoubleClick">
         </wpf:VlcPlayer>
         <Image Grid.Column="0" Height="256" Width="256" HorizontalAlignment="Center" VerticalAlignment="Center" Name="RadioCenterIcon" Visibility="Collapsed" Source="Resources/radio_biginvert.png" IsHitTestVisible="False"/>
-        <Label Grid.Column="0" Height="40" FontSize="20" VerticalAlignment="Top" Name="CurrentlyPlaying" Content="Currently playing channel" Visibility="Visible" Foreground="White" Background="Black" IsHitTestVisible="False"/>
-        <Label Grid.Column="0" Height="50" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Name="BufferedInputLabel" Content="" Visibility="Collapsed" Foreground="Black" Background="Yellow" IsHitTestVisible="False"/>
-    </Grid>
+        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Label Grid.Column="0" Height="40" FontSize="25" HorizontalContentAlignment="Left" Name="BufferedInputLabel" Content="" Visibility="Collapsed" Foreground="Black" Background="Yellow" IsHitTestVisible="False"/>
+            <Label Grid.Column="0" Height="40" FontSize="25" Name="CurrentlyPlayingLabel" Content="Currently playing channel" Visibility="Visible" Foreground="White" Background="Black" IsHitTestVisible="False"/>
+        </StackPanel>
+        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Label Background="Black" Width="100" HorizontalContentAlignment="Center" >
+                <Image Name="MutedIcon" Height="64" Width="64" Visibility="Collapsed" Source="Resources/muted_64_white.png" IsHitTestVisible="False"/>
+            </Label>
+        </StackPanel>
+        </Grid>
 </Window>

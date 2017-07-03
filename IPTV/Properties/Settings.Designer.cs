@@ -82,5 +82,17 @@ namespace IPTV.Properties {
                 this["LastPlayedType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LastPlayedNum {
+            get {
+                return ((int)(this["LastPlayedNum"]));
+            }
+            set {
+                this["LastPlayedNum"] = value;
+            }
+        }
     }
 }

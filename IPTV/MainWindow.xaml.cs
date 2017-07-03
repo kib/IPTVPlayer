@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
+using AudioSwitcher.AudioApi.CoreAudio;
 
 namespace IPTV
 {
@@ -25,10 +26,12 @@ namespace IPTV
         public const int APPCOMMAND_VOLUME_DOWN = 0x90000;
         public const int WM_APPCOMMAND = 0x319;
 
-        private DispatcherTimer cpTimer; // currently playing
+        private DispatcherTimer cpTimer; // currently playing timer
         private DispatcherTimer biTimer; // buffered input timer
         private String BufferedInput;
         private List<Channel> chanimport;
+        private CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
+        private Channel currentChannel;
 
         private static readonly IDictionary<Key, String> NumericKeys = new Dictionary<Key, String> {
             { Key.D0, "0" },
@@ -85,12 +88,10 @@ namespace IPTV
             BufferedInput = "";
             biTimer.IsEnabled = false;
         }
-
-
-
+        
         private void cpTimer_Tick(object sender, EventArgs e)
         {
-            CurrentlyPlaying.Visibility = Visibility.Collapsed;
+            CurrentlyPlayingLabel.Visibility = Visibility.Collapsed;
             cpTimer.IsEnabled = false;
         }
 
@@ -114,7 +115,14 @@ namespace IPTV
 
         private void cmMute_Click(object sender, RoutedEventArgs e)
         {
-            switchState_Muted();
+            if (vidPlayer.IsMute)
+            {
+                switchState_Muted(false);
+            }
+            else
+            {
+                switchState_Muted(true);
+            }
             e.Handled = true;
         }
 
@@ -171,7 +179,14 @@ namespace IPTV
                     switchState_Fullscreen();
                     break;
                 case Key.M:
-                    switchState_Muted();
+                    if (vidPlayer.IsMute)
+                    {
+                        switchState_Muted(false);
+                    }
+                    else
+                    {
+                        switchState_Muted(true);
+                    }
                     break;
                 case Key.Q:
                     applicationQuit();
@@ -218,7 +233,7 @@ namespace IPTV
         {
             biTimer.Stop();
             BufferedInput += v;
-            BufferedInputLabel.Content = BufferedInput;
+            BufferedInputLabel.Content = "Go to:" + BufferedInput;
             BufferedInputLabel.Visibility = Visibility.Visible;
             biTimer.Start();
         }
@@ -227,7 +242,8 @@ namespace IPTV
         private void playMedia(Channel ch)
         {
             storePref_RecentlyPlayed(ch);
-            updateCurrentPlayingLabel(ch);
+            currentChannel = ch;
+            updateCurrentPlayingLabel(currentChannel);
             vidPlayer.LoadMedia(new Uri(ch.URL));
             if (ch.Type == "Radio")
             {
@@ -248,20 +264,37 @@ namespace IPTV
                 RadioCenterIcon.Visibility = Visibility.Visible;
             }
             
-            CurrentlyPlaying.Content = "Currently playing: " + ch.Name;
-            CurrentlyPlaying.Visibility = Visibility.Visible;
+            CurrentlyPlayingLabel.Content = "Volume: " + defaultPlaybackDevice.Volume.ToString() + "% | Channel: " + ch.Name + " (ch. " + ch.Lcn + ")";
+            CurrentlyPlayingLabel.Visibility = Visibility.Visible;
         }
 
         private void Audio_VolDown()
         {
-            SendMessageW(new WindowInteropHelper(this).Handle, WM_APPCOMMAND, new WindowInteropHelper(this).Handle,
-                (IntPtr)APPCOMMAND_VOLUME_DOWN);
+            double vol = defaultPlaybackDevice.Volume;
+            if ( vol > 0)
+            {
+                defaultPlaybackDevice.Volume = vol-1;
+                updateCurrentPlayingLabel(currentChannel);
+            }
+            if (vol == 1)
+            {
+                switchState_Muted(true);
+            }
+          
         }
 
         private void Audio_VolUp()
         {
-            SendMessageW(new WindowInteropHelper(this).Handle, WM_APPCOMMAND, new WindowInteropHelper(this).Handle,
-                (IntPtr)APPCOMMAND_VOLUME_UP);
+            double vol = defaultPlaybackDevice.Volume;
+            if (vidPlayer.IsMute)
+            {
+                switchState_Muted(false);
+            }
+            if (vol < 100)
+            {
+                defaultPlaybackDevice.Volume = vol + 1;
+                updateCurrentPlayingLabel(currentChannel);
+            }
         }
 
         // settings and interface
@@ -291,6 +324,7 @@ namespace IPTV
             if (Properties.Settings.Default.LastPlayed != "")
             {
                 Channel ch = new Channel();
+                ch.Lcn = Properties.Settings.Default.LastPlayedNum;
                 ch.Name = Properties.Settings.Default.LastPlayedName;
                 ch.Type = Properties.Settings.Default.LastPlayedType;
                 ch.URL = Properties.Settings.Default.LastPlayed;
@@ -312,6 +346,7 @@ namespace IPTV
             Properties.Settings.Default.LastPlayed = ch.URL;
             Properties.Settings.Default.LastPlayedName = ch.Name;
             Properties.Settings.Default.LastPlayedType = ch.Type;
+            Properties.Settings.Default.LastPlayedNum = ch.Lcn;
             Properties.Settings.Default.Save();
             Properties.Settings.Default.Reload();
         }
@@ -366,17 +401,21 @@ namespace IPTV
             }
         }
 
-        private void switchState_Muted()
+        private void switchState_Muted(Boolean iwillmute)
         {
-            vidPlayer.ToggleMute();
-            if (vidPlayer.IsMute)
+            if (iwillmute)
             {
+                MutedIcon.Visibility = Visibility.Visible;
                 changeMenuItem(cmMute, "Unmute", "Resources/unmuted.png");
+                cmMute.Click += (sender, e) => switchState_Muted(false);
             }
             else
             {
+                MutedIcon.Visibility = Visibility.Collapsed;
                 changeMenuItem(cmMute, "Mute", "Resources/muted.png");
+                cmMute.Click += (sender, e) => switchState_Muted(true);
             }
+            vidPlayer.ToggleMute();
         }
 
         private void changeMenuItem(MenuItem menu, String header, String IconResource)
