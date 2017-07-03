@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
 
 namespace IPTV
 {
@@ -24,11 +25,27 @@ namespace IPTV
         public const int APPCOMMAND_VOLUME_DOWN = 0x90000;
         public const int WM_APPCOMMAND = 0x319;
 
+        private DispatcherTimer cpTimer;
+
         public MainWindow()
         {
             InitializeComponent();
             populateInterface();
+            createCurrentlyPlayingTimer();
             loadSettings();
+        }
+
+        private void createCurrentlyPlayingTimer()
+        {
+            cpTimer = new DispatcherTimer();
+            cpTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            cpTimer.Interval = new TimeSpan(0, 0, 8);
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            CurrentlyPlaying.Visibility = Visibility.Collapsed;
+            cpTimer.IsEnabled = false;
         }
 
         // clicks
@@ -77,7 +94,7 @@ namespace IPTV
 
             if (clicked.URL != null)
             {
-                playMedia(new Uri(clicked.URL));
+                playMedia(clicked);
             }
 
             e.Handled = true;
@@ -100,7 +117,7 @@ namespace IPTV
 
         private void HandleKeyPress(object sender, KeyEventArgs e)
         {
-            switch (e.Key) 
+            switch (e.Key)
             {
                 case Key.C:
                     switchState_ChannelList();
@@ -133,11 +150,24 @@ namespace IPTV
         }
      
         // audio and video
-        private void playMedia(Uri url)
+        private void playMedia(Channel ch)
         {
-            vidPlayer.LoadMedia(url);
-            storePref_RecentlyPlayed(url.ToString());
+            
+            storePref_RecentlyPlayed(ch);
+            updateCurrentPlayingLabel(ch);
+            vidPlayer.LoadMedia(new Uri(ch.URL));
             vidPlayer.Play();
+        }
+
+        private void updateCurrentPlayingLabel(Channel ch)
+        {
+            cpTimer.Stop();
+            if (ch.Type != "Radio")
+            {
+                cpTimer.Start();
+            }
+            CurrentlyPlaying.Content = "Currently playing: " + ch.Name;
+            CurrentlyPlaying.Visibility = Visibility.Visible;
         }
 
         private void Audio_VolDown()
@@ -178,20 +208,28 @@ namespace IPTV
 
             if (Properties.Settings.Default.LastPlayed != "")
             {
-                playMedia(new Uri(Properties.Settings.Default.LastPlayed));
+                Channel ch = new Channel();
+                ch.Name = Properties.Settings.Default.LastPlayedName;
+                ch.Type = Properties.Settings.Default.LastPlayedType;
+                ch.URL = Properties.Settings.Default.LastPlayed;
+                playMedia(ch);
             }
             else
             {
                 // if nothing was stored, play the first channel
-                //playMedia(new Uri("udp://@239.1.1.1:8000"));
-                playMedia(new Uri("D:\\VS_Projects\\test.avi"));
+                Channel ch = new Channel();
+                ch.Name = "ICC CR1 EN";
+                ch.Type = "ICC";
+                ch.URL = "udp://@239.1.1.1:8000;ICC";
+                playMedia(ch);
             }
         }
 
-        private void storePref_RecentlyPlayed(String url)
+        private void storePref_RecentlyPlayed(Channel ch)
         {
-            String uri = url;
-            Properties.Settings.Default.LastPlayed = uri.ToString();
+            Properties.Settings.Default.LastPlayed = ch.URL;
+            Properties.Settings.Default.LastPlayedName = ch.Name;
+            Properties.Settings.Default.LastPlayedType = ch.Type;
             Properties.Settings.Default.Save();
             Properties.Settings.Default.Reload();
         }
@@ -233,11 +271,13 @@ namespace IPTV
             if (ChannelView.Visibility == Visibility.Collapsed)
             {
                 changeMenuItem(cmChannels, "Hide Channels", "Resources/onepanel.png");
+                channelColumn.Width = new GridLength(220);
                 ChannelView.Visibility = Visibility.Visible;
                 storePref_PanelShown(true);
             }
             else if (ChannelView.Visibility == Visibility.Visible)
             {
+                channelColumn.Width = new GridLength(0);
                 changeMenuItem(cmChannels, "Show Channels", "Resources/twopanel.png");
                 ChannelView.Visibility = Visibility.Collapsed;
                 storePref_PanelShown(false);
@@ -350,7 +390,7 @@ namespace IPTV
             MenuItem newitem = new MenuItem();
             newitem.Header = ch.Name;
             newitem.InputGestureText = ch.Lcn.ToString();
-            newitem.Click += (sender, e) => playMedia(new Uri(ch.URL));
+            newitem.Click += (sender, e) => playMedia(ch);
             menu.Items.Add(newitem);
         }
 

@@ -58,5 +58,29 @@ namespace IPTV.Properties {
                 this["FullScreen"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastPlayedName {
+            get {
+                return ((string)(this["LastPlayedName"]));
+            }
+            set {
+                this["LastPlayedName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastPlayedType {
+            get {
+                return ((string)(this["LastPlayedType"]));
+            }
+            set {
+                this["LastPlayedType"] = value;
+            }
+        }
     }
 }

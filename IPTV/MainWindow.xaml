@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:IPTV.Objects"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1200"
+        Title="ICC IPTV" Height="800" Width="1200"
         Icon="monitor.ico"
         WindowStyle="ThreeDBorderWindow">
-    <DockPanel Loaded="dpMain_Loaded" Name="dpMain" Background="Black">
-        <TreeView BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" DockPanel.Dock="Right" HorizontalAlignment="Left">
+    <Grid Loaded="dpMain_Loaded" Name="dpMain" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Name="vidColumn" Width="*" />
+            <ColumnDefinition Name="channelColumn" Width="220" />
+        </Grid.ColumnDefinitions>
+        <TreeView Grid.Column="1" BorderBrush="Black" Background="Black" Name="ChannelView" SelectedItemChanged="ChannelView_SelectedItemChanged" Width="220" HorizontalAlignment="Right">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True" />
@@ -27,7 +31,7 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <wpf:VlcPlayer DockPanel.Dock="Left" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vidPlayer_DoubleClick">
+        <wpf:VlcPlayer Grid.Column="0" BorderBrush="Black" Background="Black" xmlns:wpf="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf" x:Name="vidPlayer" MouseDoubleClick="vidPlayer_DoubleClick">
             <wpf:VlcPlayer.ContextMenu>
                 <ContextMenu Name="rmMenu">
                     <MenuItem Header="FullScreen"  InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
@@ -70,5 +74,6 @@
                 </ContextMenu>
             </wpf:VlcPlayer.ContextMenu>
         </wpf:VlcPlayer>
-    </DockPanel>
+        <Label Grid.Column="0" Height="40" FontSize="20" VerticalAlignment="Top" Name="CurrentlyPlaying" Content="Currently playing channel" Visibility="Visible" Foreground="White" Background="Black" MouseDoubleClick="vidPlayer_DoubleClick" />
+    </Grid>
 </Window>
