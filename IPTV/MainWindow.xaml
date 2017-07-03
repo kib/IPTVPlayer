@@ -42,7 +42,7 @@
                     </MenuItem>
                     <MenuItem Header="Hide Channels" InputGestureText="C" x:Name="cmChannels" Click="cmChannels_Click">
                         <MenuItem.Icon>
-                            <Image Source="Resources/twopanel.png" />
+                            <Image Source="Resources/onepanel.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />

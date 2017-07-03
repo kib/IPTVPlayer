@@ -1095,21 +1095,13 @@
     </Content>
     <Resource Include="Resources\onepanel.png" />
     <Resource Include="Resources\larger.png" />
-    <Resource Include="Resources\larger2.png" />
-    <Resource Include="Resources\list.png" />
-    <Resource Include="Resources\maxsound.png" />
-    <Resource Include="Resources\monitor.png" />
-    <Resource Include="Resources\mute.png" />
-    <Resource Include="Resources\muted.png" />
-    <Resource Include="Resources\nolist.png" />
-    <Resource Include="Resources\nosound.png" />
-    <Resource Include="Resources\power.png" />
-    <Resource Include="Resources\Radio.png" />
     <Resource Include="Resources\smaller.png" />
-    <Resource Include="Resources\TV.png" />
     <Resource Include="Resources\twopanel.png" />
-    <Resource Include="Resources\unmute.png" />
+    <Resource Include="Resources\Radio.png" />
+    <Resource Include="Resources\TV.png" />
+    <Resource Include="Resources\muted.png" />
     <Resource Include="Resources\unmuted.png" />
+    <Resource Include="Resources\power.png" />
     <Resource Include="monitor.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
