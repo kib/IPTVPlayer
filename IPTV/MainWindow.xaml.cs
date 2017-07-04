@@ -11,12 +11,15 @@ using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using AudioSwitcher.AudioApi.CoreAudio;
+using IPTV.WindowPlacementExample;
+using System.ComponentModel;
 
 namespace IPTV
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    
     public partial class MainWindow : Window
     {
         [DllImport("user32.dll")]
@@ -52,6 +55,8 @@ namespace IPTV
             { Key.NumPad9, "9" }
         };
 
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +64,7 @@ namespace IPTV
             createCurrentlyPlayingTimer();
             createBufferedInputTimer();
             loadSettings();
+            Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);
         }
 
         private void createCurrentlyPlayingTimer()
@@ -231,8 +237,11 @@ namespace IPTV
         {
             
             Channel biChannel = chanimport.FirstOrDefault(ch => ch.Lcn == Convert.ToInt32(BufferedInput));
-            if (biChannel != null) { playMedia(biChannel); }
-            BufferedInputLabel.Content = BufferedInput + ": " + biChannel.Name + " ";
+            if (biChannel != null)
+            {
+                playMedia(biChannel);
+                BufferedInputLabel.Content = BufferedInput + ": " + biChannel.Name + " ";
+            }
         }
 
         private void addBufferedInput(string v)
@@ -340,6 +349,7 @@ namespace IPTV
             {
                 // if nothing was stored, play the first channel
                 Channel ch = new Channel();
+                ch.Lcn = 1;
                 ch.Name = "ICC CR1 EN";
                 ch.Type = "ICC";
                 ch.URL = "udp://@239.1.1.1:8000;ICC";
@@ -405,6 +415,18 @@ namespace IPTV
                 ChannelView.Visibility = Visibility.Collapsed;
                 storePref_PanelShown(false);
             }
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            this.SetPlacement(Properties.Settings.Default.MainWindowPlacement);
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.MainWindowPlacement = this.GetPlacement();
+            Properties.Settings.Default.Save();
         }
 
         private void switchState_Muted(Boolean iwillmute)
