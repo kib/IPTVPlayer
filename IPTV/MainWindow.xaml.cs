@@ -55,8 +55,6 @@ namespace IPTV
             { Key.NumPad9, "9" }
         };
 
-        
-
         public MainWindow()
         {
             InitializeComponent();
@@ -64,7 +62,6 @@ namespace IPTV
             createCurrentlyPlayingTimer();
             createBufferedInputTimer();
             loadSettings();
-            Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);
         }
 
         private void createCurrentlyPlayingTimer()
@@ -489,6 +486,10 @@ namespace IPTV
         // populate the interface
         private void populateInterface()
         {
+            //start listening for window close events //
+            Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);
+
+            // import channel list
             chanimport = importChannelList();
 
             Category c1 = new Category() { Name = "ICC" };
