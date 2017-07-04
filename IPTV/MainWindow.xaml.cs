@@ -177,14 +177,7 @@ namespace IPTV
                     switchState_Fullscreen();
                     break;
                 case Key.M:
-                    if (vidPlayer.IsMute)
-                    {
-                        switchState_Muted(false);
-                    }
-                    else
-                    {
-                        switchState_Muted(true);
-                    }
+                    switchState_Muted(!vidPlayer.IsMute);
                     break;
                 case Key.Q:
                     applicationQuit();
