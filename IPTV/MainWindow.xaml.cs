@@ -73,14 +73,13 @@ namespace IPTV
             BufferedInput = "";
             biTimer = new DispatcherTimer();
             biTimer.Tick += new EventHandler(biTimer_Tick);
-            biTimer.Interval = new TimeSpan(0, 0, 1);
+            biTimer.Interval = new TimeSpan(0, 0, 2);
         }
 
         private void biTimer_Tick(object sender, EventArgs e)
         {
+            jumpBufferedImput();
             BufferedInputLabel.Visibility = Visibility.Collapsed;
-            Channel biChannel = chanimport.FirstOrDefault(ch => ch.Lcn == Convert.ToInt32(BufferedInput));
-            if (biChannel != null) { playMedia(biChannel); }
             BufferedInput = "";
             biTimer.IsEnabled = false;
         }
@@ -221,15 +220,26 @@ namespace IPTV
                 case Key.D9:
                     addBufferedInput(NumericKeys[e.Key]);
                     break;
+                case Key.Enter:
+                    jumpBufferedImput();
+                    break;
             }
             e.Handled = true;
+        }
+
+        private void jumpBufferedImput()
+        {
+            
+            Channel biChannel = chanimport.FirstOrDefault(ch => ch.Lcn == Convert.ToInt32(BufferedInput));
+            if (biChannel != null) { playMedia(biChannel); }
+            BufferedInputLabel.Content = BufferedInput + ": " + biChannel.Name + " ";
         }
 
         private void addBufferedInput(string v)
         {
             biTimer.Stop();
             BufferedInput += v;
-            BufferedInputLabel.Content = "Go to: " + BufferedInput;
+            BufferedInputLabel.Content = "" + BufferedInput + ": ";
             BufferedInputLabel.Visibility = Visibility.Visible;
             biTimer.Start();
         }
