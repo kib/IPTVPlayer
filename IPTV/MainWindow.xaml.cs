@@ -30,7 +30,7 @@ namespace IPTV
         private String BufferedInput;
         private List<Channel> chanimport;
         private CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
-        private Channel currentChannel;
+        public Channel currentChannel;
 
         private static double TVRATIO = 0.5515;
         private static double RATIO =  0.5765625;
@@ -366,10 +366,11 @@ namespace IPTV
 
         private void switchState_Fullscreen()
         {
+            Channel ch = currentChannel;
             if (WindowState == WindowState.Maximized)
             {
-                WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.ThreeDBorderWindow;
+                WindowState = WindowState.Normal;
                 changeMenuItem(cmFullScreen, "FullScreen" ,"Resources/larger.png");
                 storePref_FullScreen(false);
             }
