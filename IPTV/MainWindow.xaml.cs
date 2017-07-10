@@ -139,26 +139,16 @@ namespace IPTV
             try
             {
                 clicked = (Channel)ChannelView.SelectedItem;
-            }
-            catch (InvalidCastException) { }
+            } catch (InvalidCastException) { }
 
             if (clicked.URL != null)
             {
                 playMedia(clicked);
             }
-
             e.Handled = true;
-
-            /* interesting properties to resize window with later
-            Console.Write("\r\n");
-            Console.Write("vidPlayer.ActualHeight = " + vidPlayer.ActualHeight + " <\r\n" );
-            Console.Write("vidPlayer.ActualWidth = " + vidPlayer.ActualWidth + " <\r\n");
-            Console.Write("vidPlayer.RenderSize = " + vidPlayer.RenderSize + " <\r\n");
-            Console.Write("\r\n");
-            */
         }
 
-        // keypresses
+        // Handle keypresses
         private void dpMain_Loaded(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
@@ -310,7 +300,7 @@ namespace IPTV
         {
             Properties.Settings.Default.Reload();
 
-            if (Properties.Settings.Default.ShowPanel)
+            if (Properties.Settings.Default.ShowPanel == true)
             {
                 if (ChannelView.Visibility == Visibility.Collapsed)
                 {
