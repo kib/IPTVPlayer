@@ -32,6 +32,9 @@ namespace IPTV
         private CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
         private Channel currentChannel;
 
+        private static double TVRATIO = 0.5515;
+        private static double RATIO =  0.5765625;
+
         private static readonly IDictionary<Key, String> NumericKeys = new Dictionary<Key, String> {
             { Key.D0, "0" },
             { Key.D1, "1" },
@@ -225,7 +228,6 @@ namespace IPTV
 
         private void jumpBufferedImput()
         {
-            
             Channel biChannel = chanimport.FirstOrDefault(ch => ch.Lcn == Convert.ToInt32(BufferedInput));
             if (biChannel != null)
             {
@@ -255,6 +257,7 @@ namespace IPTV
                 vidPlayer.Stop();
             }
             vidPlayer.Play();
+            Resize_WindowtoChannel(ch);
         }
 
         private void updateCurrentPlayingLabel(Channel ch)
@@ -342,7 +345,7 @@ namespace IPTV
                 ch.Lcn = 1;
                 ch.Name = "ICC CR1 EN";
                 ch.Type = "ICC";
-                ch.URL = "udp://@239.1.1.1:8000;ICC";
+                ch.URL = "udp://@239.1.1.1:8000";
                 playMedia(ch);
             }
         }
@@ -397,6 +400,8 @@ namespace IPTV
                 channelColumn.Width = new GridLength(220);
                 ChannelView.Visibility = Visibility.Visible;
                 storePref_PanelShown(true);
+                double W_new = Application.Current.MainWindow.Width + 220;
+                Application.Current.MainWindow.Width = W_new;
             }
             else if (ChannelView.Visibility == Visibility.Visible)
             {
@@ -404,6 +409,8 @@ namespace IPTV
                 changeMenuItem(cmChannels, "Show Channels", "Resources/twopanel.png");
                 ChannelView.Visibility = Visibility.Collapsed;
                 storePref_PanelShown(false);
+                double W_new = Application.Current.MainWindow.Width - 220;
+                Application.Current.MainWindow.Width = W_new;
             }
         }
 
@@ -481,6 +488,7 @@ namespace IPTV
         {
             //start listening for window close events //
             Application.Current.MainWindow.Closing += new CancelEventHandler(MainWindow_Closing);
+            Application.Current.MainWindow.SizeChanged += new SizeChangedEventHandler(Mainwindow_SizeChanged);
 
             // import channel list
             chanimport = importChannelList();
@@ -513,6 +521,47 @@ namespace IPTV
             cats.Add(c2);
             cats.Add(c3);
             ChannelView.ItemsSource = cats;
+        }
+
+        private void Mainwindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Resize_WindowtoChannel(currentChannel);
+        }
+
+        private void Resize_WindowtoChannel(Channel ch)
+        {
+            double chratio = 0;
+            double H_act = vidPlayer.ActualHeight;
+            double W_act = vidPlayer.ActualWidth;
+            switch (ch.Type) {
+                case "ICC":
+                    chratio = RATIO;
+                    break;
+                case "TV":
+                    chratio = TVRATIO;
+                    break;             
+            }
+            if (chratio != 0)
+            {
+                double H_opt = Math.Ceiling(W_act * chratio);
+                double W_opt = Math.Ceiling(H_act / chratio);
+                double H_less = new double();
+                double W_less = new double();
+                if (H_opt < H_act && H_act != 0) // bars are on the left and right side
+                {
+                    H_less = H_act - H_opt;
+                    W_less = 0;
+                }
+                else if (W_opt < W_act && W_act != 0) // bars are on the top and bottom side
+                {
+                    H_less = 0;
+                    W_less = W_act - W_opt;
+                }
+                double H_new = Application.Current.MainWindow.Height - H_less;
+                double W_new = Application.Current.MainWindow.Width - W_less;
+                Application.Current.MainWindow.Height = H_new;
+                Application.Current.MainWindow.Width = W_new;
+            }
         }
 
         private void addRMBItem(Channel ch)
