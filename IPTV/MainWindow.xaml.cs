@@ -242,10 +242,7 @@ namespace IPTV
             currentChannel = ch;
             updateCurrentPlayingLabel(currentChannel);
             vidPlayer.LoadMedia(new Uri(ch.URL));
-            if (ch.Type == "Radio")
-            {
-                vidPlayer.Stop();
-            }
+            vidPlayer.Stop();
             vidPlayer.Play();
             Resize_WindowtoChannel(ch);
         }
