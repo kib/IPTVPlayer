@@ -15,21 +15,14 @@
         </Grid.ColumnDefinitions>
         <Grid.ContextMenu>
             <ContextMenu Name="rmMenu">
-                <MenuItem Header="FullScreen"  InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
+                <MenuItem Header="FullScreen" InputGestureText="F" x:Name="cmFullScreen" Click="cmFullScreen_Click">
                     <MenuItem.Icon>
                         <Image Source="Resources/larger.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Mute" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/muted.png" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Hide Channels" InputGestureText="C" x:Name="cmChannels" Click="cmChannels_Click">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/onepanel.png" />
-                    </MenuItem.Icon>
-                </MenuItem>
+                <MenuItem Header="Always on top" InputGestureText="T" x:Name="cmAlwaysOnTop" Click="cmAlwaysonTop_Click" />
+                <MenuItem Header="Mute Audio" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click" />
+                <MenuItem Header="Show Channel List" InputGestureText="C or L" x:Name="cmChannels" Click="cmChannels_Click" />
                 <Separator />
                 <MenuItem Header="ICC" x:Name="cmItem1">
                     <MenuItem.Icon>

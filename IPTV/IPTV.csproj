@@ -1102,16 +1102,13 @@
     <Content Include="LibVlc\plugins\visualization\libvisual_plugin.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\monitor.png" />
     <Resource Include="Resources\muted_64_white.png" />
     <Resource Include="Resources\radio_biginvert.png" />
-    <Resource Include="Resources\onepanel.png" />
     <Resource Include="Resources\larger.png" />
     <Resource Include="Resources\smaller.png" />
-    <Resource Include="Resources\twopanel.png" />
     <Resource Include="Resources\Radio.png" />
     <Resource Include="Resources\TV.png" />
-    <Resource Include="Resources\muted.png" />
-    <Resource Include="Resources\unmuted.png" />
     <Resource Include="Resources\power.png" />
     <Resource Include="monitor.ico" />
   </ItemGroup>

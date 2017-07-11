@@ -16,7 +16,7 @@ namespace IPTV
     using System.Xml;
     using System.Xml.Serialization;
 
-    namespace WindowPlacementExample
+    namespace WindowPlacement
     {
         // RECT structure required by WINDOWPLACEMENT structure
         [Serializable]

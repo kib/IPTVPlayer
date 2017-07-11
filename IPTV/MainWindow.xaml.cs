@@ -7,11 +7,10 @@ using System.Windows.Controls;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using AudioSwitcher.AudioApi.CoreAudio;
-using IPTV.WindowPlacementExample;
+using IPTV.WindowPlacement;
 using System.ComponentModel;
 
 namespace IPTV
@@ -106,6 +105,7 @@ namespace IPTV
         private void cmExit_Click(object sender, RoutedEventArgs e)
         {
             applicationQuit();
+            e.Handled = true;
         }
 
         private void cmChannels_Click(object sender, RoutedEventArgs e)
@@ -145,6 +145,13 @@ namespace IPTV
             {
                 playMedia(clicked);
             }
+            e.Handled = true;
+        }
+
+        private void cmAlwaysonTop_Click(object sender, RoutedEventArgs e)
+        {
+            this.Topmost = !this.Topmost;
+            cmAlwaysOnTop.IsChecked = this.Topmost;
             e.Handled = true;
         }
 
@@ -387,21 +394,19 @@ namespace IPTV
         {
             if (ChannelView.Visibility == Visibility.Collapsed)
             {
-                changeMenuItem(cmChannels, "Hide Channels", "Resources/onepanel.png");
+                cmChannels.IsChecked = true;
                 channelColumn.Width = new GridLength(220);
                 ChannelView.Visibility = Visibility.Visible;
                 storePref_PanelShown(true);
-                double W_new = Application.Current.MainWindow.Width + 220;
-                Application.Current.MainWindow.Width = W_new;
+                Application.Current.MainWindow.Width = Application.Current.MainWindow.Width + 220;
             }
             else if (ChannelView.Visibility == Visibility.Visible)
             {
+                cmChannels.IsChecked = false;
                 channelColumn.Width = new GridLength(0);
-                changeMenuItem(cmChannels, "Show Channels", "Resources/twopanel.png");
                 ChannelView.Visibility = Visibility.Collapsed;
                 storePref_PanelShown(false);
-                double W_new = Application.Current.MainWindow.Width - 220;
-                Application.Current.MainWindow.Width = W_new;
+                Application.Current.MainWindow.Width = Application.Current.MainWindow.Width - 220;
             }
         }
 
@@ -422,15 +427,14 @@ namespace IPTV
             if (iwillmute)
             {
                 MutedIcon.Visibility = Visibility.Visible;
-                changeMenuItem(cmMute, "Unmute", "Resources/unmuted.png");
                 cmMute.Click += (sender, e) => switchState_Muted(false);
             }
             else
             {
                 MutedIcon.Visibility = Visibility.Collapsed;
-                changeMenuItem(cmMute, "Mute", "Resources/muted.png");
                 cmMute.Click += (sender, e) => switchState_Muted(true);
             }
+            cmMute.IsChecked = iwillmute;
             vidPlayer.ToggleMute();
         }
 
@@ -561,13 +565,13 @@ namespace IPTV
             switch (ch.Type)
             {
                 case "ICC":
-                    menu = (MenuItem)this.rmMenu.Items[4];
-                    break;
-                case "TV":
                     menu = (MenuItem)this.rmMenu.Items[5];
                     break;
-                case "Radio":
+                case "TV":
                     menu = (MenuItem)this.rmMenu.Items[6];
+                    break;
+                case "Radio":
+                    menu = (MenuItem)this.rmMenu.Items[7];
                     break;
             }
             MenuItem newitem = new MenuItem();
@@ -584,6 +588,5 @@ namespace IPTV
             Properties.Settings.Default.Save();
             Close();
         }
-
     }
 }
