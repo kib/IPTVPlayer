@@ -116,14 +116,7 @@ namespace IPTV
 
         private void cmMute_Click(object sender, RoutedEventArgs e)
         {
-            if (vidPlayer.IsMute)
-            {
-                switchState_Muted(false);
-            }
-            else
-            {
-                switchState_Muted(true);
-            }
+            switchState_Muted(!vidPlayer.IsMute);
             e.Handled = true;
         }
 
