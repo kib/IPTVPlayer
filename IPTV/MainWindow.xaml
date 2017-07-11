@@ -22,7 +22,7 @@
                 </MenuItem>
                 <MenuItem Header="Always on top" InputGestureText="T" x:Name="cmAlwaysOnTop" Click="cmAlwaysonTop_Click" />
                 <MenuItem Header="Mute Audio" InputGestureText="M" x:Name="cmMute" Click="cmMute_Click" />
-                <MenuItem Header="Show Channel List" InputGestureText="C or L" x:Name="cmChannels" Click="cmChannels_Click" />
+                <MenuItem Header="Show Channel List" InputGestureText="L" x:Name="cmChannels" Click="cmChannels_Click" />
                 <Separator />
                 <MenuItem Header="ICC" x:Name="cmItem1">
                     <MenuItem.Icon>

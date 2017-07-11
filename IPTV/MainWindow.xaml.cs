@@ -309,12 +309,14 @@ namespace IPTV
 
             if (Properties.Settings.Default.ShowPanel == true)
             {
+                cmChannels.IsChecked = true;
                 if (ChannelView.Visibility == Visibility.Collapsed)
                 {
                     switchState_ChannelList();
                 }
             } else if (Properties.Settings.Default.ShowPanel == false)
             {
+                cmChannels.IsChecked = false;
                 if (ChannelView.Visibility == Visibility.Visible)
                 {
                     switchState_ChannelList();
